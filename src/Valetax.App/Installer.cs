@@ -10,6 +10,7 @@ public static class Installer
         services.AddScoped<NodeService>();
         services.AddScoped<TreeService>();
         services.AddScoped<TokenService>();
+        services.AddScoped<JournalService>();
         return services;
     }
 }

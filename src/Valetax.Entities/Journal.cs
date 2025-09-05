@@ -10,7 +10,7 @@ public class Journal
     
     public string? Body { get; set; }
     
-    public required string StackTrace { get; set; }
+    public string? StackTrace { get; set; }
     
     public required Guid EventId { get; set; }
     

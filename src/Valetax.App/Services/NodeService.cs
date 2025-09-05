@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Valetax.App.Exceptions;
 using Valetax.Entities;
 using Valetax.Persistence;
 
@@ -13,18 +14,20 @@ public class NodeService
         _dbContext = dbContext;
     }
 
-    public async Task<int> Create(int treeId, int? parentNodeId, string name)
+    public async ValueTask<int> Create(int treeId, int? parentNodeId, string name)
     {
+        await Validate(treeId, parentNodeId);   
+        
         var node = new Node
         {
             TreeId = treeId,
-            Name = name,
             ParentId = parentNodeId,
+            Name = name,
         };
 
         await _dbContext.AddAsync(node);
         await _dbContext.SaveChangesAsync();
-        
+
         return node.Id;
     }
 
@@ -39,8 +42,27 @@ public class NodeService
     public async Task Delete(int nodeId)
     {
         await _dbContext.Set<Node>()
-            .Where(x=>x.Id == nodeId)
+            .Where(x => x.Id == nodeId)
             .ExecuteDeleteAsync();
     }
-            
+
+    private async Task Validate(int treeId, int? parentNodeId)
+    {
+        if (!parentNodeId.HasValue)
+        {
+            return;
+        }
+
+        var parentAny = await _dbContext.Set<Node>()
+            .Where(x => x.Id == parentNodeId)
+            .Where(x => x.TreeId == treeId)
+            .AnyAsync();
+
+        if (parentAny)
+        {
+            return;
+        }
+
+        throw new SecureException($"treeId = {treeId}, parentNodeId = {parentNodeId} not found.");
+    }
 }

@@ -14,7 +14,7 @@ public class TreeService
         _dbContext = dbContext;
     }
 
-    public async Task<int> Create(string name)
+    public async ValueTask<int> Create(string name)
     {
         var tree = new Tree
         {
@@ -23,13 +23,14 @@ public class TreeService
 
         await _dbContext.AddAsync(tree);
         await _dbContext.SaveChangesAsync();
+        
         return tree.Id;
     }
 
     public async Task<IReadOnlyList<TreeDto>> Read(string name)
     {
         var data = await _dbContext.Set<Tree>()
-            .Where(x => x.Name == name)
+            .Where(x => x.Name.Contains(name))
             .Select(x => new TreeDto
             {
                 Id = x.Id,

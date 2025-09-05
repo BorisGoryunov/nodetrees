@@ -2,33 +2,54 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Valetax.App.Services;
+using Valetax.Server.Api;
 
 namespace Valetax.Server;
 
-public class ExceptionFilter : IExceptionFilter
+public class ExceptionFilter : IAsyncExceptionFilter
 {
     private readonly ILogger<ExceptionFilter> _logger;
-    private readonly HttpRequestLogger _httpRequestLogger;
+    private readonly HttpContext _httpContext;
+    private readonly JournalService _journalService;
 
-    public ExceptionFilter(ILogger<ExceptionFilter> logger, HttpRequestLogger httpRequestLogger)
+    public ExceptionFilter(ILogger<ExceptionFilter> logger,
+        HttpContext httpContext,
+        JournalService  journalService)
     {
         _logger = logger;
-        _httpRequestLogger = httpRequestLogger;
+        _httpContext = httpContext;
+        _journalService = journalService;
     }
 
-    public void OnException(ExceptionContext context)
+    public async Task OnExceptionAsync(ExceptionContext context)
     {
-        _httpRequestLogger.LogTrace();
+        var request = _httpContext.Request;
+
+        var requestBody = _httpContext.Items["RequestBody"] as string
+                          ?? "No body content";
+
+        var queryParams = FormatQueryParameters(request.Query);
+        
+        _logger.LogTrace($"Method: {request.Method}, " +
+                         $"Path: {request.Path}, " +
+                         $"Query Parameters: {queryParams}, " +
+                         $"Body: {requestBody}");
         
         _logger.LogError($"An exception occurred: {context.Exception}");
-
+        
+        var eventId = await _journalService.Create(request.Method,
+            request.Path, 
+            queryParams, 
+            context.Exception.StackTrace);
+        
         var statusCode = HttpStatusCode.InternalServerError;
         var message = "An internal server error occurred.";
 
         if (context.Exception is ValidationException validationException)
         {
             statusCode = HttpStatusCode.BadRequest;
-            message = context.Exception.Message;
+            message = validationException.Message;
         }
         else if (context.Exception is KeyNotFoundException keyNotFoundException)
         {
@@ -41,8 +62,9 @@ public class ExceptionFilter : IExceptionFilter
             message = argumentException.Message;
         }
         
-        var response = new 
+        var response = new Response<Guid> 
         {
+            Data = eventId,
             Message = message,
             Success = false
         };
@@ -53,6 +75,11 @@ public class ExceptionFilter : IExceptionFilter
         };
 
         context.ExceptionHandled = true;
+    }
+    
+    private static string FormatQueryParameters(IQueryCollection query)
+    {
+        return string.Join(", ", query.Select(q => $"{q.Key}: {string.Join(";", q.Value)}"));
     }
 }
 

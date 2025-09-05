@@ -1,5 +1,6 @@
 using Valetax.App;
 using Valetax.Persistence;
+using Valetax.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ services.AddPersistence(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
+builder.Services.AddControllers(x => x.Filters.Add<ExceptionFilter>());
 
 var app = builder.Build();
 
@@ -20,6 +21,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
 
-app.Services.Migrate();
+//app.Services.Migrate();
 
 app.Run();
