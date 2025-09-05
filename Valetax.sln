@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valetax.Server", "src\Valetax.Server\Valetax.Server.csproj", "{D53D2488-EBEF-42F1-A782-B6D9BFAB7EB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valetax.Entities", "src\Valetax.Entities\Valetax.Entities.csproj", "{A5BB1877-1BC5-4E81-B697-03A8574E20E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valetax.Persistence", "src\Valetax.Persistence\Valetax.Persistence.csproj", "{684C139C-B56C-4D7F-99D9-41DE453CA450}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valetax.App", "src\Valetax.App\Valetax.App.csproj", "{FF0221FD-7629-4548-998C-7E10AFACA9D1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D53D2488-EBEF-42F1-A782-B6D9BFAB7EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D53D2488-EBEF-42F1-A782-B6D9BFAB7EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D53D2488-EBEF-42F1-A782-B6D9BFAB7EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D53D2488-EBEF-42F1-A782-B6D9BFAB7EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5BB1877-1BC5-4E81-B697-03A8574E20E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5BB1877-1BC5-4E81-B697-03A8574E20E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5BB1877-1BC5-4E81-B697-03A8574E20E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5BB1877-1BC5-4E81-B697-03A8574E20E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684C139C-B56C-4D7F-99D9-41DE453CA450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684C139C-B56C-4D7F-99D9-41DE453CA450}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684C139C-B56C-4D7F-99D9-41DE453CA450}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684C139C-B56C-4D7F-99D9-41DE453CA450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF0221FD-7629-4548-998C-7E10AFACA9D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF0221FD-7629-4548-998C-7E10AFACA9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF0221FD-7629-4548-998C-7E10AFACA9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF0221FD-7629-4548-998C-7E10AFACA9D1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
