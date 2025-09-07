@@ -1,0 +1,1 @@
+dotnet ef migrations add --project src/Valetax.Persistence/Valetax.Persistence.csproj --startup-project src/Valetax.Persistence/Valetax.Persistence.csproj --context Valetax.Persistence.AppDbContext --configuration Debug --verbose Initial --output-dir Migrations
