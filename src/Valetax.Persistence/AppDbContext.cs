@@ -11,8 +11,16 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Node>()
-            .HasIndex(x => new { x.TreeId, x.ParentId })
+        var node = modelBuilder.Entity<Node>();
+
+        node.HasIndex(x => new { x.TreeId, x.ParentId })
             .IsUnique();
+        
+        node.Property(x => x.Name)
+            .HasMaxLength(150);
+
+        modelBuilder.Entity<Tree>()
+            .Property(x => x.Name)
+            .HasMaxLength(150);
     }
 }

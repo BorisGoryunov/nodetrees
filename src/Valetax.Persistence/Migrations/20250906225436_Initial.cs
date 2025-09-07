@@ -41,7 +41,10 @@ namespace Valetax.Persistence.Migrations
                         name: "FK_Node_Node_ParentId",
                         column: x => x.ParentId,
                         principalTable: "Node",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict
+                        );
+                    
                     table.ForeignKey(
                         name: "FK_Node_Tree_TreeId",
                         column: x => x.TreeId,
