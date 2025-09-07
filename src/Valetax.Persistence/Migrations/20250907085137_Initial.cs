@@ -1,0 +1,102 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
+#nullable disable
+
+namespace Valetax.Persistence.Migrations
+{
+    /// <inheritdoc />
+    public partial class Initial : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Journal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MethodName = table.Column<string>(type: "text", nullable: false),
+                    Query = table.Column<string>(type: "text", nullable: true),
+                    Body = table.Column<string>(type: "text", nullable: true),
+                    StackTrace = table.Column<string>(type: "text", nullable: true),
+                    EventId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Journal", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tree",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tree", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Node",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    ParentId = table.Column<int>(type: "integer", nullable: true),
+                    TreeId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Node", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Node_Node_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Node",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Node_Tree_TreeId",
+                        column: x => x.TreeId,
+                        principalTable: "Tree",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Journal_CreatedAt",
+                table: "Journal",
+                column: "CreatedAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Node_ParentId",
+                table: "Node",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Node_TreeId_ParentId",
+                table: "Node",
+                columns: new[] { "TreeId", "ParentId" },
+                unique: true);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Journal");
+
+            migrationBuilder.DropTable(
+                name: "Node");
+
+            migrationBuilder.DropTable(
+                name: "Tree");
+        }
+    }
+}

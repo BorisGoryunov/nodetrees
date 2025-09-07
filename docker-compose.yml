@@ -10,7 +10,7 @@ services:
     ports:
       - "5433:5432"
     command:
-      -p 5433
+      -p 5432
     environment:
       POSTGRES_DB: valetax
       POSTGRES_USER: valetax

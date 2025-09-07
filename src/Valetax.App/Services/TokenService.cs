@@ -9,7 +9,7 @@ public class TokenService
 {
     public string GetToken(string code)
     {
-        const string secret = "secret++=";
+        const string secret = "The encryption algorithm 'HS256' requires a key size of at least '128' bits.";
         const int tokenLifeTimeMinutes = 15;
         
         var expDate = new DateTimeOffset(DateTime.UtcNow.AddMinutes(tokenLifeTimeMinutes))

@@ -1,7 +1,9 @@
 namespace Valetax.App.Dto;
 
-public class JournalDto
+public class JournalItem
 {
+    public required int Id { get; set; }
+    
     public required Guid EventId { get; set; }
     
     public required string MethodName { get; set; }

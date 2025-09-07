@@ -2,6 +2,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Valetax.App.Exceptions;
 using Valetax.App.Services;
 using Valetax.Server.Api;
 
@@ -14,11 +15,12 @@ public class ExceptionFilter : IAsyncExceptionFilter
     private readonly JournalService _journalService;
 
     public ExceptionFilter(ILogger<ExceptionFilter> logger,
-        HttpContext httpContext,
+        IHttpContextAccessor accessor,
         JournalService  journalService)
     {
         _logger = logger;
-        _httpContext = httpContext;
+        _httpContext = accessor.HttpContext 
+                       ?? throw new ArgumentNullException(nameof(IHttpContextAccessor));
         _journalService = journalService;
     }
 

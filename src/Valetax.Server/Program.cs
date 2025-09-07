@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 services.AddValetaxApp();
 services.AddPersistence(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -20,7 +21,9 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
+app.UseAuthorization();
+app.UseRouting();
 
-//app.Services.Migrate();
+app.Services.Migrate();
 
 app.Run();

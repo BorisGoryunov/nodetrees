@@ -15,11 +15,11 @@ public class JournalController : ApiControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Response<JournalDto>>> Read(int id)
+    public async Task<ActionResult<Response<JournalItem>>> Read(int id)
     {
         var item = await _journalService.Read(id);
 
-        var response = new Response<JournalDto>
+        var response = new Response<JournalItem>
         {
             Data = item,
             Success = true,
@@ -29,14 +29,30 @@ public class JournalController : ApiControllerBase
         return Ok(response);
     }
 
+    [HttpGet("event/{eventId:guid}")]
+    public async Task<ActionResult<Response<JournalItem>>> Read(Guid eventId)
+    {
+        var item = await _journalService.Read(eventId);
+
+        var response = new Response<JournalItem>
+        {
+            Data = item,
+            Success = true,
+            Message = "OK"
+        };
+
+        return Ok(response);
+    }
+    
     [HttpGet("range")]
-    public async Task<ActionResult<ListResponse<JournalDto>>> GetRange([FromQuery] int offset,
+    public async Task<ActionResult<ListResponse<JournalItem>>> GetRange([FromQuery] int offset,
         [FromQuery] int limit,
         [FromQuery] DateTimeOffset? fromDate,
-        [FromQuery] DateTimeOffset? toDate)
+        [FromQuery] DateTimeOffset? toDate )
     {
         var data = await _journalService.GetRange(offset, limit, fromDate, toDate);
-        var response = new ListResponse<JournalDto>
+        
+        var response = new ListResponse<JournalItem>
         {
             Data = data,
             Success = true,
