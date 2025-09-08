@@ -9,8 +9,8 @@ services:
     restart: always
     ports:
       - "5433:5432"
-    command:
-      -p 5432
+    # command:
+    #   -p 5432
     environment:
       POSTGRES_DB: valetax
       POSTGRES_USER: valetax
@@ -18,3 +18,12 @@ services:
     volumes:
       - valetax-database-volume:/var/lib/postgresql/data
 
+  valutax-service:
+    container_name: valutax-service  
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    depends_on:
+      - valetax-database
