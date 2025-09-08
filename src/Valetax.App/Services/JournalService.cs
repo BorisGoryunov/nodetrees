@@ -18,7 +18,11 @@ public class JournalService
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<Guid> Create(string methodName, string query,  string body, string? stackTrace)
+    public async Task<int> Create(string methodName,
+        string query,
+        string body,
+        string? stackTrace,
+        Guid eventId)
     {
         var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -26,7 +30,7 @@ public class JournalService
         var item = new Journal
         {
             CreatedAt = DateTimeOffset.UtcNow,
-            EventId = Guid.NewGuid(),
+            EventId = eventId,
             MethodName = methodName,
             Body = body,
             Query = query,
@@ -36,7 +40,7 @@ public class JournalService
         await dbContext.AddAsync(item);
         await dbContext.SaveChangesAsync();
         
-        return item.EventId;
+        return item.Id;
     }
     
     public async Task<JournalItem> Read(int id)

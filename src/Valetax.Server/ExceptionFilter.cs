@@ -31,6 +31,12 @@ public class ExceptionFilter : IAsyncExceptionFilter
         var requestBody = _httpContext.Items["RequestBody"] as string
                           ?? "No body content";
 
+        _logger.LogError($"An exception occurred: {context.Exception}");
+        
+        
+        var statusCode = HttpStatusCode.InternalServerError;
+        var message = "An internal server error occurred.";
+        
         var queryParams = FormatQueryParameters(request.Query);
         
         _logger.LogTrace($"Method: {request.Method}, " +
@@ -38,16 +44,30 @@ public class ExceptionFilter : IAsyncExceptionFilter
                          $"Query Parameters: {queryParams}, " +
                          $"Body: {requestBody}");
         
-        _logger.LogError($"An exception occurred: {context.Exception}");
-        
-        var eventId = await _journalService.Create(request.Method,
-            request.Path, 
-            queryParams, 
-            context.Exception.StackTrace);
-        
-        var statusCode = HttpStatusCode.InternalServerError;
-        var message = "An internal server error occurred.";
+        var eventId =  Guid.NewGuid();
 
+        try
+        {
+            await _journalService.Create(request.Method,
+                request.Path,
+                queryParams,
+                context.Exception.StackTrace,
+                eventId);
+        }
+        catch (Exception exception)
+        {
+            WriteResponse(context, statusCode, exception.Message, eventId);
+            return;
+        }
+
+        WriteResponse(context, statusCode, message, eventId);
+    }
+
+    private static void WriteResponse(ExceptionContext context,
+        HttpStatusCode  statusCode,
+        string message,
+        Guid eventId)
+    {
         if (context.Exception is ValidationException validationException)
         {
             statusCode = HttpStatusCode.BadRequest;
@@ -67,6 +87,7 @@ public class ExceptionFilter : IAsyncExceptionFilter
         var response = new Response<Guid> 
         {
             Data = eventId,
+            
             Message = message,
             Success = false
         };
